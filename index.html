@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
+    <title>Modern Tic Tac Toe</title>
+    <meta name="description" content="A sleek, futuristic developer-themed Tic Tac Toe game with 2-player and AI modes, real-time scoreboards, glowing effects, and responsive design." />
+    <meta property="og:title" content="Modern Tic Tac Toe" />
+    <meta property="og:description" content="A sleek, futuristic developer-themed Tic Tac Toe game with 2-player and AI modes, real-time scoreboards, glowing effects, and responsive design." />
+    <meta property="og:type" content="website" />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+
+    <!-- Application Stylesheet -->
+    <link rel="stylesheet" href="./style.css" />
+  </head>
+  <body>
+    <!-- Subtle Animated Ambient Background -->
+    <div class="ambient-background" aria-hidden="true">
+      <div class="ambient-glow-1"></div>
+      <div class="ambient-glow-2"></div>
+      <div class="grid-overlay"></div>
+    </div>
+
+    <!-- Celebration FX Canvas -->
+    <canvas id="fx-canvas" aria-hidden="true"></canvas>
+
+    <!-- Main Game Container -->
+    <main class="game-container" role="main">
+      <!-- Game Header -->
+      <header class="game-header">
+        <h1 class="game-title">TIC TAC TOE</h1>
+        <p class="game-subtitle">Think Smart. Play Strategic.</p>
+      </header>
+
+      <!-- Tactical Control Bar -->
+      <section class="control-panel" aria-label="Game Mode and Settings">
+        <div class="mode-selector" role="radiogroup" aria-label="Select Game Mode">
+          <button id="btn-mode-pvp" class="mode-btn active" type="button" aria-pressed="true">
+            <span>👥</span> 2 Players (Local)
+          </button>
+          <button id="btn-mode-pve" class="mode-btn" type="button" aria-pressed="false">
+            <span>🤖</span> vs Computer
+          </button>
+        </div>
+
+        <div class="sub-controls">
+          <div id="ai-difficulty-group" class="difficulty-pill-group" style="display: none;">
+            <span class="difficulty-label">AI Logic:</span>
+            <button id="btn-diff-casual" class="diff-btn" type="button">Casual</button>
+            <button id="btn-diff-master" class="diff-btn active" type="button">Master</button>
+          </div>
+
+          <div style="margin-left: auto;">
+            <button id="btn-sound-toggle" class="sound-toggle-btn" type="button" aria-label="Toggle Sound Effects">
+              <span id="sound-icon" aria-hidden="true">🔊</span> Sound
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Scoreboard -->
+      <section class="scoreboard" aria-label="Scoreboard">
+        <div class="score-card score-card-x">
+          <div class="score-player">
+            <span class="score-badge-symbol">X</span> Player X
+          </div>
+          <div id="score-x" class="score-value">0</div>
+        </div>
+
+        <div class="score-card score-card-draw">
+          <div class="score-player">
+            <span class="score-badge-symbol">⚖️</span> Draws
+          </div>
+          <div id="score-draw" class="score-value">0</div>
+        </div>
+
+        <div class="score-card score-card-o">
+          <div class="score-player">
+            <span class="score-badge-symbol">O</span> <span id="player-o-label">Player O</span>
+          </div>
+          <div id="score-o" class="score-value">0</div>
+        </div>
+      </section>
+
+      <!-- Active Turn Indicator & Status -->
+      <section class="status-indicator-bar" aria-live="polite" aria-atomic="true">
+        <div id="turn-badge" class="turn-badge turn-x" aria-hidden="true">X</div>
+        <div id="status-message" class="status-message">Player X's Turn</div>
+      </section>
+
+      <!-- Centered 3x3 Game Board Grid -->
+      <section class="board-wrapper" aria-label="Tic Tac Toe 3 by 3 Grid">
+        <div id="game-board" class="game-board" data-turn="X">
+          <button class="cell" data-cell="0" type="button" aria-label="Grid cell 1, top left"></button>
+          <button class="cell" data-cell="1" type="button" aria-label="Grid cell 2, top center"></button>
+          <button class="cell" data-cell="2" type="button" aria-label="Grid cell 3, top right"></button>
+          <button class="cell" data-cell="3" type="button" aria-label="Grid cell 4, middle left"></button>
+          <button class="cell" data-cell="4" type="button" aria-label="Grid cell 5, center"></button>
+          <button class="cell" data-cell="5" type="button" aria-label="Grid cell 6, middle right"></button>
+          <button class="cell" data-cell="6" type="button" aria-label="Grid cell 7, bottom left"></button>
+          <button class="cell" data-cell="7" type="button" aria-label="Grid cell 8, bottom center"></button>
+          <button class="cell" data-cell="8" type="button" aria-label="Grid cell 9, bottom right"></button>
+        </div>
+
+        <!-- Laser Strike SVG Overlay -->
+        <svg id="strike-svg" class="strike-svg-overlay" aria-hidden="true">
+          <line id="strike-line" class="strike-line" x1="0" y1="0" x2="0" y2="0" stroke-width="7" />
+        </svg>
+
+        <!-- Winner Announcement Modal -->
+        <div id="winner-banner" class="winner-banner" role="dialog" aria-modal="true" aria-labelledby="banner-title">
+          <span id="banner-icon" class="winner-banner-icon" aria-hidden="true">⚡</span>
+          <h2 id="banner-title" class="winner-banner-title color-x">Player X Victorious!</h2>
+          <p id="banner-desc" class="winner-banner-desc">Outstanding tactical strategy.</p>
+          <button id="banner-next-btn" class="btn btn-restart" type="button">Next Round</button>
+        </div>
+      </section>
+
+      <!-- Action Buttons -->
+      <section class="action-buttons-group">
+        <button id="btn-restart" class="btn btn-restart" type="button">
+          <span>🔄</span> Restart Game
+        </button>
+        <button id="btn-reset-score" class="btn btn-reset-score" type="button">
+          <span>🗑️</span> Reset Scores
+        </button>
+      </section>
+
+      <!-- Tactical Meta Telemetry -->
+      <div class="tactical-meta">
+        <span id="round-counter">Round #1</span>
+        <span>·</span>
+        <span>3×3 Tactical Grid</span>
+      </div>
+
+      <!-- Small Footer -->
+      <footer class="game-footer">
+        Designed for strategic minds.
+      </footer>
+    </main>
+
+    <!-- Game Logic Script -->
+    <script src="./script.js"></script>
+  </body>
+</html>
+
